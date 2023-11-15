@@ -30,13 +30,13 @@ async function run() {
       const exams = await boardExamsCollection.find(query).toArray();
       res.send(exams);
 
-      app.get('/boardExams/:groupsOrYears', async(req, res) => {
-        const groupsOrYears = req.params.groupsOrYears;
-        const query = { link: groupsOrYears };
-        const groupOrYear = await boardExamsCollection.findOne(query);
-        res.send(groupOrYear)
+      app.get('/boardExams/:hscSubjects', async(req, res) => {
+        const hscSubjects = req.params.hscSubjects;
+        const query = { link: hscSubjects };
+        const data = await boardExamsCollection.findOne(query);
+        res.send(data);
       })
-    })
+    });
   }
   finally {
 
