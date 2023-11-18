@@ -26,6 +26,9 @@ async function run() {
     const boardExamsCollection = client.db('allQuestionsBank').collection('boardExams');
     const govtJobsCollection = client.db('allQuestionsBank').collection('govtJobs');
     const primarySchoolTeacherJobsCollection = client.db('allQuestionsBank').collection('primarySchoolTeacher');
+    const schoolCollegeTeacherExamsCollection = client.db('allQuestionsBank').collection('schoolCollegeTeacher');
+    const bankJobsCollection = client.db('allQuestionsBank').collection('bankJobs');
+    const modelTestsCollection = client.db('allQuestionsBank').collection('modelTests');
 
     // Get all board exams
     app.get('/boardExams', async(req, res) => {
@@ -69,6 +72,43 @@ async function run() {
         const teacherExam = req.params.teacherExam;
         const query = { link: teacherExam };
         const exam = await primarySchoolTeacherJobsCollection.findOne(query);
+        res.send(exam);
+      });
+
+      // Get all school/college teacher exams
+      app.get('/schoolCollegeTeacher', async(req, res) => {
+        const query = {};
+        const exams = await schoolCollegeTeacherExamsCollection.find(query).toArray();
+        res.send(exams);
+        });
+      
+        // Get all bank jobs
+      app.get('/bankJobs', async(req, res) => {
+        const query = {};
+        const jobs = await bankJobsCollection.find(query).toArray();
+        res.send(jobs);
+        });
+        
+        // Get single teacher exam
+      app.get('/bankJobs/:bankExam', async(req, res) => {
+        const bankExam = req.params.bankExam;
+        const query = { link: bankExam };
+        const exam = await bankJobsCollection.findOne(query);
+        res.send(exam);
+      });
+
+        // Get all model test
+      app.get('/modelTests', async(req, res) => {
+        const query = {};
+        const tests = await modelTestsCollection.find(query).toArray();
+        res.send(tests);
+        });
+        
+        // Get single model test
+      app.get('/modelTests/:testExam', async(req, res) => {
+        const testExam = req.params.testExam;
+        const query = { link: testExam };
+        const exam = await modelTestsCollection.findOne(query);
         res.send(exam);
       });
   }
