@@ -24,19 +24,37 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const boardExamsCollection = client.db('allQuestionsBank').collection('boardExams');
+    const govtJobsCollection = client.db('allQuestionsBank').collection('govtJobs');
 
+    // Get all board exams
     app.get('/boardExams', async(req, res) => {
       const query = {};
       const exams = await boardExamsCollection.find(query).toArray();
       res.send(exams);
+      });
 
-      app.get('/boardExams/:hscSubjects', async(req, res) => {
-        const hscSubjects = req.params.hscSubjects;
-        const query = { link: hscSubjects };
-        const data = await boardExamsCollection.findOne(query);
-        res.send(data);
+      // Get Single board exam
+      app.get('/boardExams/:allSubjects', async(req, res) => {
+        const allSubjects = req.params.allSubjects;
+        const query = { link: allSubjects };
+        const subjects = await boardExamsCollection.findOne(query);
+        res.send(subjects);
+      });
+
+      // Get govt jobs
+      app.get('/govtJobs', async(req, res) => {
+        const query = {};
+        const jobs = await govtJobsCollection.find(query).toArray();
+        res.send(jobs)
+      });
+
+      // Get single govt job
+      app.get('/govtJobs/:govtJob', async(req, res) => {
+        const govtJob = req.params.govtJob;
+        const query = { link: govtJob };
+        const job = await govtJobsCollection.findOne(query);
+        res.send(job);
       })
-    });
   }
   finally {
 
