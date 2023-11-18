@@ -25,6 +25,7 @@ async function run() {
   try {
     const boardExamsCollection = client.db('allQuestionsBank').collection('boardExams');
     const govtJobsCollection = client.db('allQuestionsBank').collection('govtJobs');
+    const primarySchoolTeacherJobsCollection = client.db('allQuestionsBank').collection('primarySchoolTeacher');
 
     // Get all board exams
     app.get('/boardExams', async(req, res) => {
@@ -54,7 +55,22 @@ async function run() {
         const query = { link: govtJob };
         const job = await govtJobsCollection.findOne(query);
         res.send(job);
-      })
+      });
+
+      // Get all primary school teacher exams
+      app.get('/priSchoolTeacher', async(req, res) => {
+      const query = {};
+      const exams = await primarySchoolTeacherJobsCollection.find(query).toArray();
+      res.send(exams);
+      });
+
+      // Get single teacher exam
+      app.get('/priSchoolTeacher/:teacherExam', async(req, res) => {
+        const teacherExam = req.params.teacherExam;
+        const query = { link: teacherExam };
+        const exam = await primarySchoolTeacherJobsCollection.findOne(query);
+        res.send(exam);
+      });
   }
   finally {
 
