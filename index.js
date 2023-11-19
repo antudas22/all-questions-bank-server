@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
+
 const port = process.env.PORT || 5000;
 const app = express();
 
@@ -21,6 +23,22 @@ const client = new MongoClient(uri, {
   }
 });
 
+// Verify JWT Middleware
+function verifyJWT(req, res, next){
+  const authHeader = req.headers.authorization;
+  if(!authHeader){
+    return res.status(401).send('unauthorized access');
+  }
+  const token = authHeader.split(' ')[1]
+  jwt.verify(token, process.env.ACCESS_TOKEN, function(err, decoded){
+    if(err){
+      return res.status(403).send({message: 'forbidden access'})
+    }
+    req.decoded = decoded;
+    next();
+  })
+}
+
 async function run() {
   try {
     const boardExamsCollection = client.db('allQuestionsBank').collection('boardExams');
@@ -29,6 +47,7 @@ async function run() {
     const schoolCollegeTeacherExamsCollection = client.db('allQuestionsBank').collection('schoolCollegeTeacher');
     const bankJobsCollection = client.db('allQuestionsBank').collection('bankJobs');
     const modelTestsCollection = client.db('allQuestionsBank').collection('modelTests');
+    const usersCollection = client.db('allQuestionsBank').collection('users');
 
     // Get all board exams
     app.get('/boardExams', async(req, res) => {
@@ -110,6 +129,30 @@ async function run() {
         const query = { link: testExam };
         const exam = await modelTestsCollection.findOne(query);
         res.send(exam);
+      });
+
+      // JWT Token
+      app.get('/jwt', async(req, res) => {
+        const email = req.query.email;
+        const query = {email: email}
+        const user = await usersCollection.findOne(query);
+        if(user){
+          const token = jwt.sign({email}, process.env.ACCESS_TOKEN, {expiresIn: '30d'})
+          return res.send({accessToken: token});
+        }
+        res.status(403).send({accessToken: 'Unauthorized'})
+      });
+
+      // Users Collection
+      app.post('/users', async(req, res) => {
+        const user = req.body;
+        const email = user.email;
+        const filter = await usersCollection.find({email}).toArray();
+        if(filter.length === 0){
+          const result = await usersCollection.insertOne(user);
+          return res.send(result);
+        }
+        res.send(user);
       });
   }
   finally {
