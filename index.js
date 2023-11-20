@@ -149,7 +149,7 @@ async function run() {
         const users = await usersCollection.find(query).toArray()
         res.send(users);
       })
-
+      
       // Users Collection
       app.post('/users', async(req, res) => {
         const user = req.body;
@@ -161,9 +161,24 @@ async function run() {
         }
         res.send(user);
       });
+      
+      // Check Admin
+      app.get('/users/admin/:email', async(req, res) => {
+        const email = req.params.email;
+        const query = {email}
+        const user = await usersCollection.findOne(query);
+        res.send({isAdmin: user?.role === 'admin'});
+      })
 
       // Make Admin Api
-      app.put('/users/admin/:email', async(req, res) => {
+      app.put('/users/admin/:email', verifyJWT, async(req, res) => {
+        const decodedEmail = req.decoded.email;
+        const query = {email: decodedEmail};
+        const user = await usersCollection.findOne(query);
+
+        if(user?.role !== 'admin'){
+          return res.status(403).send({message: 'forbidden access'})
+        }
         const email = req.params.email;
         const filter = { email: email }
         const options = { upsert: true };
@@ -175,8 +190,16 @@ async function run() {
         const result = await usersCollection.updateOne(filter, updatedDoc, options);
         res.send(result);
       })
+
       // Make user Api
-      app.put('/users/user/:email', async(req, res) => {
+      app.put('/users/user/:email', verifyJWT, async(req, res) => {
+        const decodedEmail = req.decoded.email;
+        const query = {email: decodedEmail};
+        const user = await usersCollection.findOne(query);
+        
+        if(user?.role !== 'admin'){
+          return res.status(403).send({message: 'forbidden access'})
+        }
         const email = req.params.email;
         const filter = { email: email }
         const options = { upsert: true };
