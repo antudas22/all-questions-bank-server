@@ -79,6 +79,13 @@ async function run() {
         res.send(job);
       });
 
+      // Add Govt Jobs
+      app.post('/govtJobs', async(req, res) => {
+        const govtJob = req.body;
+        const result = await govtJobsCollection.insertOne(govtJob);
+        res.send(result);
+      })
+
       // Get all primary school teacher exams
       app.get('/priSchoolTeacher', async(req, res) => {
       const query = {};
@@ -93,6 +100,13 @@ async function run() {
         const exam = await primarySchoolTeacherJobsCollection.findOne(query);
         res.send(exam);
       });
+
+      // Add Primary School Teacher Jobs
+      app.post('/priSchoolTeacher', async(req, res) => {
+        const primarySchoolTeacherJob = req.body;
+        const result = await primarySchoolTeacherJobsCollection.insertOne(primarySchoolTeacherJob);
+        res.send(result);
+      })
 
       // Get all school/college teacher exams
       app.get('/schoolCollegeTeacher', async(req, res) => {
@@ -211,6 +225,8 @@ async function run() {
         const result = await usersCollection.updateOne(filter, updatedDoc, options);
         res.send(result);
       })
+
+      
   }
   finally {
 
