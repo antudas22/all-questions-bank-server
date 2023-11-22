@@ -106,7 +106,7 @@ async function run() {
         const primarySchoolTeacherJob = req.body;
         const result = await primarySchoolTeacherJobsCollection.insertOne(primarySchoolTeacherJob);
         res.send(result);
-      })
+      });
 
       // Get all school/college teacher exams
       app.get('/schoolCollegeTeacher', async(req, res) => {
@@ -114,15 +114,22 @@ async function run() {
         const exams = await schoolCollegeTeacherExamsCollection.find(query).toArray();
         res.send(exams);
         });
+
+      // Add Primary School Teacher Jobs
+      app.post('/schoolCollegeTeacher', async(req, res) => {
+        const schoolCollegeTeacherJob = req.body;
+        const result = await schoolCollegeTeacherExamsCollection.insertOne(schoolCollegeTeacherJob);
+        res.send(result);
+        });
       
-        // Get all bank jobs
+      // Get all bank jobs
       app.get('/bankJobs', async(req, res) => {
         const query = {};
         const jobs = await bankJobsCollection.find(query).toArray();
         res.send(jobs);
         });
         
-        // Get single teacher exam
+      // Get single Bank exam
       app.get('/bankJobs/:bankExam', async(req, res) => {
         const bankExam = req.params.bankExam;
         const query = { link: bankExam };
@@ -130,7 +137,14 @@ async function run() {
         res.send(exam);
       });
 
-        // Get all model test
+      // Add Bank Exam
+      app.post('/bankJobs', async(req, res) => {
+        const bankExam = req.body;
+        const result = await bankJobsCollection.insertOne(bankExam);
+        res.send(result);
+        });
+
+      // Get all model test
       app.get('/modelTests', async(req, res) => {
         const query = {};
         const tests = await modelTestsCollection.find(query).toArray();
@@ -143,7 +157,14 @@ async function run() {
         const query = { link: testExam };
         const exam = await modelTestsCollection.findOne(query);
         res.send(exam);
-      });
+        });
+
+      // Add Model Test
+      app.post('/modelTests', async(req, res) => {
+        const modelTest = req.body;
+        const result = await modelTestsCollection.insertOne(modelTest);
+        res.send(result);
+        });
 
       // JWT Token
       app.get('/jwt', async(req, res) => {
