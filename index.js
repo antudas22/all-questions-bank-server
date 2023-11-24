@@ -42,6 +42,10 @@ function verifyJWT(req, res, next){
 async function run() {
   try {
     const boardExamsCollection = client.db('allQuestionsBank').collection('boardExams');
+    const sscCollection = client.db('allQuestionsBank').collection('ssc');
+    const hscCollection = client.db('allQuestionsBank').collection('hsc');
+    const polytechnicCollection = client.db('allQuestionsBank').collection('polytechnic');
+    const matsCollection = client.db('allQuestionsBank').collection('mats');
     const govtJobsCollection = client.db('allQuestionsBank').collection('govtJobs');
     const primarySchoolTeacherJobsCollection = client.db('allQuestionsBank').collection('primarySchoolTeacher');
     const schoolCollegeTeacherExamsCollection = client.db('allQuestionsBank').collection('schoolCollegeTeacher');
@@ -56,12 +60,29 @@ async function run() {
       res.send(exams);
       });
 
-      // Get Single board exam
-      app.get('/boardExams/:allSubjects', async(req, res) => {
-        const allSubjects = req.params.allSubjects;
-        const query = { link: allSubjects };
-        const subjects = await boardExamsCollection.findOne(query);
-        res.send(subjects);
+      // SSC Boards
+      app.get('/sscBoards', async(req, res) => {
+        const query = {};
+        const result = await sscCollection.find(query).toArray();
+        res.send(result);
+      });
+      // HSC Boards
+      app.get('/hscBoards', async(req, res) => {
+        const query = {};
+        const result = await hscCollection.find(query).toArray();
+        res.send(result);
+      });
+      // HSC Boards
+      app.get('/polytechnicBoards', async(req, res) => {
+        const query = {};
+        const result = await polytechnicCollection.find(query).toArray();
+        res.send(result);
+      });
+      // HSC Boards
+      app.get('/matsBoards', async(req, res) => {
+        const query = {};
+        const result = await matsCollection.find(query).toArray();
+        res.send(result);
       });
 
       // Get govt jobs
