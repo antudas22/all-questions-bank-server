@@ -52,6 +52,31 @@ async function run() {
     const bankJobsCollection = client.db('allQuestionsBank').collection('bankJobs');
     const modelTestsCollection = client.db('allQuestionsBank').collection('modelTests');
     const usersCollection = client.db('allQuestionsBank').collection('users');
+    const recentSectionCollection = client.db('allQuestionsBank').collection('recentSection');
+
+
+    // Recent Section
+    app.get('/recentSection', async(req, res) => {
+      const query = {};
+      const data = await recentSectionCollection.find(query).limit(4).toArray();
+      res.send(data);
+    })
+
+    //All Recent Section
+    app.get('/allRecentSection', async(req, res) => {
+      const query = {};
+      const data = await recentSectionCollection.find(query).toArray();
+      res.send(data);
+    });
+
+    //All Recent Section
+    app.get('/details/:id', async(req, res) => {
+      const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const details = await recentSectionCollection.findOne(query);
+        res.send(details);
+    });
+
 
     // Get all board exams
     app.get('/boardExams', async(req, res) => {
@@ -78,7 +103,7 @@ async function run() {
       app.get('/polytechnicBoards', async(req, res) => {
         const query = {};
         const result = await polytechnicCollection.find(query).toArray();
-        res.send(result);
+        res.send(result.reverse());
       });
 
       // Add Polytechnic Boards
@@ -92,6 +117,13 @@ async function run() {
       app.get('/matsBoards', async(req, res) => {
         const query = {};
         const result = await matsCollection.find(query).toArray();
+        res.send(result.reverse());
+      });
+
+      // Add Mats Boards
+      app.post('/matsBoards', async(req, res) => {
+        const matsInfo = req.body;
+        const result = await matsCollection.insertOne(matsInfo);
         res.send(result);
       });
 
