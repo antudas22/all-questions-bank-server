@@ -60,25 +60,35 @@ async function run() {
       res.send(exams);
       });
 
-      // SSC Boards
-      app.get('/sscBoards', async(req, res) => {
-        const query = {};
-        const result = await sscCollection.find(query).toArray();
-        res.send(result);
-      });
       // HSC Boards
       app.get('/hscBoards', async(req, res) => {
         const query = {};
         const result = await hscCollection.find(query).toArray();
+        res.send(result.reverse());
+      });
+
+      // Add HSC Boards
+      app.post('/hscBoards', async(req, res) => {
+        const hscInfo = req.body;
+        const result = await hscCollection.insertOne(hscInfo);
         res.send(result);
       });
-      // HSC Boards
+
+      // Polytechnic Boards
       app.get('/polytechnicBoards', async(req, res) => {
         const query = {};
         const result = await polytechnicCollection.find(query).toArray();
         res.send(result);
       });
-      // HSC Boards
+
+      // Add Polytechnic Boards
+      app.post('/polytechnicBoards', async(req, res) => {
+        const polyInfo = req.body;
+        const result = await polytechnicCollection.insertOne(polyInfo);
+        res.send(result);
+      });
+
+      // Mats Boards
       app.get('/matsBoards', async(req, res) => {
         const query = {};
         const result = await matsCollection.find(query).toArray();
@@ -105,7 +115,7 @@ async function run() {
         const govtJob = req.body;
         const result = await govtJobsCollection.insertOne(govtJob);
         res.send(result);
-      })
+      });
 
       // Get all primary school teacher exams
       app.get('/priSchoolTeacher', async(req, res) => {
